@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+	    #loginBoard{background:#F8F4F4;text-align:center;padding:20px;width:400px;border:1px solid #C0C0C0;border-radius:10px;box-shadow: 0 0 20px rgba(0,0,0,0.9);position:absolute;left:50px;top:30px;}
+	    h1{background:url(images/login_window_logo.png) no-repeat -200px 0px;width:200px;height:44px;border-bottom:1px solid #EFEDED;margin:0 auto;cursor:move;}
+        .user{display:block;margin-top:30px;}
+        .password{display:block;margin:20px 0;}
+        input{border-radius:20px;border:1px solid #eee;height:15px;line-height: 15px;font-size:14px;}
+        li{list-style: none;font:15px/1.3em "黑体";text-align:left;padding:0 10px;cursor:default;}
+        ul{position:absolute;background:#fff;border:1px solid #eee;bottom:-96px;right:106px;width:115px;padding:22px 0px 10px;margin:0;display:none;}
+        .login_btn{background:url(images/login_btn.png) no-repeat -110px 0px;width:300px;height:40px;margin-left:80px;}
+        .state{position:absolute;bottom:30px;left:228px;font:12px/1em "黑体";z-index:999;cursor:pointer;}
+        .icon{width:16px;height:18px;float:left;}
+        .selected{background:url(images/ptlogin.png) no-repeat 0px 0px;}
+        .triangle{background:url(images/ptlogin.png) no-repeat -17px -18px;width:16px;height:18px;display:inline-block;margin-left:3px;float:left;}
+        .dtrile{background:url(images/ptlogin.png) no-repeat 0px -18px;width:16px;height:18px;display:none;float:left;margin-left:-16px;}
+        .text{font-size:15px;}
+        .lis{width:16px;height:16px;display:inline-block;margin-right:15px;float:left;margin-top:2px;}
+        .online{background:url(images/ptlogin.png) no-repeat 0px 0px;}
+        .callme{background:url(images/ptlogin.png) no-repeat -72px 0px;}
+        .leave{background:url(images/ptlogin.png) no-repeat -18px 0px;}
+        .busy{background:url(images/ptlogin.png) no-repeat -36px 0px;}
+        .dnd{background:url(images/ptlogin.png) no-repeat -108px 0px;}
+        .hide{background:url(images/ptlogin.png) no-repeat -54px 0px;}
+        .close{background:url(images/boxy_btn.png) no-repeat 0px 0px;width:28px;height:28px;position:absolute;right:-8px;top:-8px;}
+	</style>
+</head>
+<body>
+	<div id="loginBoard">
+		<h1 id="login_window_logo"></h1>
+		<label class="user">帐号：<input type="text" placeholder="QQ号码或Email帐号"></label>
+		<label class="password">密码：<input type="password"></label>
+		<div class="login_btn"></div><div class="state"><div id="icon" class="icon selected"></div><div id="trile" class="triangle"></div><div class="dtrile"></div><span class="text">我在线上</span></div>
+		<ul class="stateSelect">
+		    <li id="online"><div class="lis online"></div><span>我在线上</span></li>
+		    <li id="callme"><div class="lis callme"></div><span>Q我吧</span></li>
+		    <li id="leave"><div class="lis leave"></div><span>离开</span></li>
+		    <li id="busy"><div class="lis busy"></div><span>忙碌</span></li>
+		    <li id="dnd"><div class="lis dnd"></div><span>请勿打扰</span></li>
+		    <li id="hide"><div class="lis hide"></div><span>隐身</span></li>
+		</ul>
+		<div class="close"></div>
+	</div>
+	<script>
+	    var state=document.getElementsByClassName("state"),
+	        stateSelect=document.getElementsByClassName("stateSelect"),
+	        option=document.getElementsByTagName("li"),
+	        text=document.getElementsByClassName("text"),
+	        dtrile=document.getElementsByClassName("dtrile"),
+	        title=document.getElementById("login_window_logo"),
+	        trile=document.getElementById("trile"),
+	        icon=document.getElementById("icon");
+	    //选择状态
+	    state[0].onclick=function(event){
+	    	stateSelect[0].style.display="block";
+	    	event.stopPropagation();
+	    	dtrile[0].style.display="inline-block";
+	    	trile.style.visibility="hidden";
+    		for(var i=0;i<option.length;i++){
+    			option[i].onmouseover=function(){
+    				this.style.background="#A4A2A2";
+    			}
+    			option[i].onmouseout=function(){
+    				this.style.backgroundColor="#fff";
+    			}
+    			option[i].onclick=function(){
+    				var id=this.id;
+    				var word=this.getElementsByTagName("span");
+    				text[0].innerHTML=word[0].innerHTML;
+    				icon.className="";
+    				icon.className="icon "+this.id;
+    			}
+    		}
+	    }
+	    document.onclick=hiddenList;
+	    function hiddenList(event){
+	    	stateSelect[0].style.display="none";
+	    	trile.style.visibility="visible";
+	    	dtrile[0].style.display="none";
+	    	event.stopPropagation();
+	    }
+
+	    //移动
+	    var loginBoard=document.getElementById("loginBoard");
+        title.onmousedown=fnDown;
+        function fnDown(event){
+        	var disX= event.clientX-loginBoard.offsetLeft,
+        	    disY= event.clientY-loginBoard.offsetTop;
+        	document.onmousemove = function(event){
+			    event = event || window.event;
+			    fnMove(event,disX,disY);
+			}
+			document.onmouseup=function(){
+				document.onmousemove=null;
+				document.onmouseup=null;
+			}
+        }
+
+        function fnMove(e,posX,posY){
+        	var l=e.clientX-posX,
+        	    t=e.clientY-posY,
+        	    winW=document.documentElement.clientWidth || document.body.clientWidth,
+        	    winH=document.documentElement.clientHeight || document.body.clientHeight,
+        	    maxW=winW-450,
+        	    maxH=winH-loginBoard.offsetHeight;
+        	if(l<0){
+        		l=0;
+        	}else if(l>maxW){
+        		l=maxW;
+        	}
+        	if(t<0){
+        		t=8;
+        	}else if(t>maxH){
+        		t=maxH;
+        	}
+        	loginBoard.style.left=l + "px";//要加px!!!
+			loginBoard.style.top=t + "px";//要加px!!!
+			console.log(l);
+        }
+	  //   function mouseDown(event){
+	  //   	var disX=event.clientX-loginBoard.offsetLeft,
+	  //   	    disY=event.clientY-loginBoard.offsetTop;
+	  //   	document.onmousemove=function(event){
+	  //   		mouseMove(event,disX,disY);
+	  //   	}
+	  //   	document.onmouseup=function(){
+	  //   		document.onmousemove=null;
+	  //   		document.onmouseup=null;
+	  //   	}
+	  //   }
+
+	  //   function mouseMove(e,posX,posY){
+	  //   	var l=e.clientX-posX,
+	  //   	    t=e.clientY-posY;
+	  //   	    winW=document.documentElement.clientWidth || document.body.clientWidth,
+	  //   	    winH=document.documentElement.clientHeight || document.body.clientHeight,
+	  //   	loginBoard.style.left=l+"px";
+	  //   	loginBoard.style.top=t+"px";
+	  //   	var maxW=winW-loginBoard.offsetWidth-10,
+		 //        maxH=winH-loginBoard.offsetHeight;
+			// if(l<0){
+			//     l=0;
+			// }else if(l>maxW){
+			//     l=maxW;
+			// }
+			// if(t<0){
+			//     t=10;
+			// }else if(t>maxH){
+			//     t=maxH;
+			// }
+	  //   }
+	</script>
+</body>
+</html>
